@@ -92,8 +92,8 @@ public class RR {
                 System.out.print(String.format("%d    ", cycleCompletionTimes.get(i)));
 
         // Display Average TT & WT
-        System.out.println("\n\nAverage Turnaround Time = " + calculateAVGTurnaroundTime());
-        System.out.println("Average Waiting Time = " + calculateAVGWaitingTime());
+        System.out.println("\n\n**Average Turnaround Time = " + calculateAVGTurnaroundTime());
+        System.out.println("**Average Waiting Time = " + calculateAVGWaitingTime());
     } 
 
     private static void checkForNewArrivals(int currentTime) {
