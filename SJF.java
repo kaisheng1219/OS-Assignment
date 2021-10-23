@@ -1,7 +1,6 @@
 import java.util.*;
 
 public class SJF {
-    // public static void main(String args[]) {
     public static void nonPreemptive() {
         Scanner input = new Scanner(System.in);
         boolean processNumberOutOfbound;
