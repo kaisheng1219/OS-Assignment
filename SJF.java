@@ -107,25 +107,31 @@ public class SJF {
         }
         drawLine(proccessArriveAt0, ganttChart, ganttChartExecutionTime, ganttChartCompletionTime);
         System.out.print("0    ");
-        if (!proccessArriveAt0)
+        if (!proccessArriveAt0) {
             if (ganttChartExecutionTime[0] / 10 > 0)
                 System.out.print(ganttChartExecutionTime[0] + "   ");
             else
                 System.out.print(ganttChartExecutionTime[0] + "    ");
+        }
 
         for(int i = 0; i < ganttChart.length; i++) {
             if (ganttChartCompletionTime[i] / 10 > 0) {
                 System.out.print(ganttChartCompletionTime[i] + "   ");
+
                 if (ganttChartExecutionTime[i + 1] != ganttChartCompletionTime[i])
                     System.out.print(ganttChartExecutionTime[i + 1] + "   ");
             }
             else {
                 System.out.print(ganttChartCompletionTime[i] + "    ");
-                if (ganttChartExecutionTime[i + 1] != ganttChartCompletionTime[i])
-                    System.out.print( ganttChartExecutionTime[i + 1] + "    ");
+
+                if (ganttChartExecutionTime[i + 1] != ganttChartCompletionTime[i]) {
+                    if (ganttChartExecutionTime[i + 1] / 10 > 0)
+                        System.out.print(ganttChartExecutionTime[i + 1] + "   ");
+                    else
+                        System.out.print(ganttChartExecutionTime[i + 1] + "    ");
+                }
             }
         }
-
         System.out.println("\n\n**Average Turnaround Time is " + (float) (avgTAT / numberOfProcess));
         System.out.println("**Average Waiting Time is " + (float) (avgWT / numberOfProcess));
     }
