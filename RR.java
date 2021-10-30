@@ -2,13 +2,14 @@ import java.util.*;
 
 public class RR {
     private static final int QUANTUM = 3;
+    private static int timer;
     private static ArrayList<Process> processes = new ArrayList<>();
     private static LinkedList<Process> readyQueue = new LinkedList<>();
     private static Scanner in = new Scanner(System.in);
 
     public static void run() {
         int numOfProcess;
-        int timer = 0;
+        timer = 0;
         ArrayList<Integer> cycleCompletionTimes = new ArrayList<>(); // store the timer for each cycle
         ArrayList<Integer> processSequence = new ArrayList<>(); // store the overall sequence of process executed
         // for rerun purposes
@@ -39,12 +40,11 @@ public class RR {
         Collections.sort(processes); // sort the processes by arrival time 
         cycleCompletionTimes.add(0); // as timer always starts from 0
         Process firstArrivedProcess = processes.get(0);
-        readyQueue.addFirst(firstArrivedProcess);
-        firstArrivedProcess.setInQueue(true);
-        if (firstArrivedProcess.getArrivalTime() != 0) {
-            timer = firstArrivedProcess.getArrivalTime();
-            cycleCompletionTimes.add(timer);
-            processSequence.add(null);
+        if (firstArrivedProcess.getArrivalTime() != 0)
+            loopForNextArrivalProcess(processSequence, cycleCompletionTimes);
+        else {
+            readyQueue.addFirst(firstArrivedProcess);
+            firstArrivedProcess.setInQueue(true);
         }
         // start executing round robin
         while (!readyQueue.isEmpty()) {
@@ -67,6 +67,9 @@ public class RR {
                 readyQueue.addLast(unfinishProcess);
             }
             cycleCompletionTimes.add(timer);
+
+            if (readyQueue.isEmpty() && hasPendingProcesses()) // no on going process between arrival times
+                loopForNextArrivalProcess(processSequence, cycleCompletionTimes);
         }
         
         // construct table 
@@ -103,6 +106,31 @@ public class RR {
                 temp.setInQueue(true);
                 readyQueue.addLast(temp);
             }
+        }
+    }
+
+    private static boolean hasPendingProcesses() {
+        for (Process process : processes)
+            if (!process.isComplete())
+                return true;
+        return false;
+    }
+
+    private static void loopForNextArrivalProcess(ArrayList<Integer> processSequence, ArrayList<Integer> cycleCompletionTimes) {
+        processSequence.add(null);
+        int i = timer + 1;
+        while (readyQueue.isEmpty()) {
+            checkForNewArrivals(i);
+            if (!readyQueue.isEmpty()) {
+                timer = i;
+                cycleCompletionTimes.add(timer);
+            }
+            else if (i == timer + QUANTUM) {
+                timer += QUANTUM;
+                processSequence.add(null);
+                cycleCompletionTimes.add(timer);
+            }
+            i++;
         }
     }
 
