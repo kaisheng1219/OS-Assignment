@@ -1,5 +1,7 @@
 import java.util.*;
 
+@SuppressWarnings("all")
+
 public class SJF {
     public static void nonPreemptive() {
         Scanner input = new Scanner(System.in);
@@ -85,12 +87,21 @@ public class SJF {
             }
         }
 
-        System.out.println("\nProcess\t\tAT\tBT\tCT\tTAT\tWT");
+        System.out.println("\nTable:");
+        System.out.println("\n+---------+--------------+------------+-----------------+-----------------+--------------+");
+        System.out.println("| Process | Arrival Time | Burst Time | Completion Time | Turnaround Time | Waiting Time |");
+        System.out.println("+---------+--------------+------------+-----------------+-----------------+--------------+");
+        
         for (int i = 0; i < numberOfProcess; i++) {
             avgWT += wt[i];
             avgTAT += tat[i];
-            System.out.println(process[i] + "\t\t" + at[i] + "\t" + bt[i] + "\t" + ct[i] + "\t" + tat[i] + "\t" + wt[i]);
+            String row = String.format(
+                "|   %2s    |      %2d      |     %2d     |       %2d        |       %2d        |      %2d      |", 
+                process[i], at[i], bt[i], ct[i], tat[i], wt[i]
+            );
+            System.out.println(row);
         }
+        System.out.println("+---------+--------------+------------+-----------------+-----------------+--------------+");
 
         // discard the last element in ganttChartExecutionTime[]
         ganttChartExecutionTime[process.length] = ganttChartCompletionTime[process.length - 1];

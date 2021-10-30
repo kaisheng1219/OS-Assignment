@@ -24,7 +24,7 @@ public class Main {
                     pressEnterToContinue();
                     break;
                 case 2 :
-                    // code block
+                    Pre_SJF.Preemptive();
                     pressEnterToContinue();
                     break;
                 case 3 :
