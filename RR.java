@@ -1,21 +1,23 @@
 import java.util.*;
+@SuppressWarnings("all")
 
 public class RR {
     private static final int QUANTUM = 3;
     private static int timer;
-    private static ArrayList<Process> processes = new ArrayList<>();
-    private static LinkedList<Process> readyQueue = new LinkedList<>();
-    private static Scanner in = new Scanner(System.in);
+    private static ArrayList<Process> processes;
+    private static LinkedList<Process> readyQueue;
+    private static ArrayList<Integer> cycleCompletionTimes;
+    private static ArrayList<Integer> processSequence;
 
     public static void run() {
         int numOfProcess;
         timer = 0;
-        ArrayList<Integer> cycleCompletionTimes = new ArrayList<>(); // store the timer for each cycle
-        ArrayList<Integer> processSequence = new ArrayList<>(); // store the overall sequence of process executed
-        // for rerun purposes
-        processes.clear();
-        readyQueue.clear();
-  
+        processes = new ArrayList<>();
+        readyQueue = new LinkedList<>();
+        cycleCompletionTimes = new ArrayList<>(); // store the timer for each cycle
+        processSequence = new ArrayList<>(); // store the overall sequence of process executed
+        
+        Scanner in = new Scanner(System.in);
         System.out.println("\n*** Round Robin (Quantum = 3) Scheduling ***\n");
         do {
             System.out.print("Enter no of process: ");
@@ -41,7 +43,7 @@ public class RR {
         cycleCompletionTimes.add(0); // as timer always starts from 0
         Process firstArrivedProcess = processes.get(0);
         if (firstArrivedProcess.getArrivalTime() != 0)
-            loopForNextArrivalProcess(processSequence, cycleCompletionTimes);
+            loopForNextArrivalProcess();
         else {
             readyQueue.addFirst(firstArrivedProcess);
             firstArrivedProcess.setInQueue(true);
@@ -54,7 +56,7 @@ public class RR {
                 timer += finishedProcess.getBurstTime();
                 while (finishedProcess.getBurstTime() > 0) 
                     finishedProcess.decrementBurstTime();
-                finishedProcess.setCompletionTime(timer); // set isComplete to true and calculate tt, wt
+                finishedProcess.updateProcessTimes(timer); // set isComplete to true and calculate tt, wt
                 checkForNewArrivals(timer);
             }
             else {
@@ -69,30 +71,14 @@ public class RR {
             cycleCompletionTimes.add(timer);
 
             if (readyQueue.isEmpty() && hasPendingProcesses()) // no on going process between arrival times
-                loopForNextArrivalProcess(processSequence, cycleCompletionTimes);
+                loopForNextArrivalProcess();
         }
         
         // construct table 
-        System.out.println("\n\nTable: ");
         printTable();
 
         // construct gantt chart
-        System.out.println("\nGantt Chart: ");
-        int numOfBoxes = processSequence.size();
-        drawLine(numOfBoxes);
-        System.out.print("|");
-        for (int i = 0; i < numOfBoxes; i++) {
-            if (processSequence.get(i) == null) 
-                System.out.print("    |");
-            else
-                System.out.print(" P" + processSequence.get(i) + " |");
-        }
-        drawLine(numOfBoxes);
-        for (int i = 0; i < cycleCompletionTimes.size(); i++) 
-            if (cycleCompletionTimes.get(i) / 10 > 0)
-                System.out.print(String.format("%d   ", cycleCompletionTimes.get(i)));
-            else
-                System.out.print(String.format("%d    ", cycleCompletionTimes.get(i)));
+        printGanttChart();
 
         // Display Average TT & WT
         System.out.println("\n\n**Average Turnaround Time = " + calculateAVGTurnaroundTime());
@@ -108,15 +94,13 @@ public class RR {
             }
         }
     }
-
     private static boolean hasPendingProcesses() {
         for (Process process : processes)
             if (!process.isComplete())
                 return true;
         return false;
     }
-
-    private static void loopForNextArrivalProcess(ArrayList<Integer> processSequence, ArrayList<Integer> cycleCompletionTimes) {
+    private static void loopForNextArrivalProcess() {
         processSequence.add(null);
         int i = timer + 1;
         while (readyQueue.isEmpty()) {
@@ -133,28 +117,27 @@ public class RR {
             i++;
         }
     }
-
     private static double calculateAVGTurnaroundTime() {
         double totalTT = 0;
         for (int i = 0; i < processes.size(); i++)
             totalTT += processes.get(i).getTurnAroundTime();
         return totalTT / processes.size();
     }
-
     private static double calculateAVGWaitingTime() {
         double totalWT = 0;
         for (int i = 0; i < processes.size(); i++)
             totalWT += processes.get(i).getWaitingTime();
         return totalWT / processes.size();
     }
-
     private static void printTable() {
+        System.out.println("\nTable:");
         System.out.println("\n+---------+--------------+------------+-----------------+-----------------+--------------+");
         System.out.println("| Process | Arrival Time | Burst Time | Completion Time | Turnaround Time | Waiting Time |");
         System.out.println("+---------+--------------+------------+-----------------+-----------------+--------------+");
+        
         for (int i = 0; i < processes.size(); i++) {
             int at, bt, ct, tt, wt;
-            for (int j = 0; j < processes.size(); j++) {
+            for (int j = 0; j < processes.size(); j++)
                 if (processes.get(j).getProcessNum() == i) {
                     at = processes.get(j).getArrivalTime();
                     bt = processes.get(j).getInitialBurstTime();
@@ -168,11 +151,27 @@ public class RR {
                     );
                     System.out.println(row);
                 }
-            }
         }
         System.out.println("+---------+--------------+------------+-----------------+-----------------+--------------+");
     }
-
+    private static void printGanttChart() {
+        System.out.println("\nGantt Chart: ");
+        int numOfBoxes = processSequence.size();
+        drawLine(numOfBoxes);
+        System.out.print("|");
+        for (int i = 0; i < numOfBoxes; i++) {
+            if (processSequence.get(i) == null) 
+                System.out.print("    |");
+            else
+                System.out.print(" P" + processSequence.get(i) + " |");
+        }
+        drawLine(numOfBoxes);
+        for (int i = 0; i < cycleCompletionTimes.size(); i++) 
+            if (cycleCompletionTimes.get(i) / 10 > 0)
+                System.out.print(String.format("%d   ", cycleCompletionTimes.get(i)));
+            else
+                System.out.print(String.format("%d    ", cycleCompletionTimes.get(i)));
+    }
     private static void drawLine(int numOfBoxes) {
         System.out.println();
         while (numOfBoxes > 0) {
