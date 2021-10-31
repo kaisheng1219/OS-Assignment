@@ -82,7 +82,7 @@ public class RR {
 
         // Display Average TT & WT
         System.out.printf("\n\n**Average Turnaround Time = %.2f\n", calculateAVGTurnaroundTime());
-        System.out.printf("**Average Waiting Time = %.2f", calculateAVGWaitingTime());
+        System.out.printf("**Average Waiting Time = %.2f\n", calculateAVGWaitingTime());
     } 
 
     private static void checkForNewArrivals(int currentTime) {
