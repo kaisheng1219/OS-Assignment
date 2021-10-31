@@ -19,13 +19,13 @@ public class SJF {
             }
         } while (processNumberOutOfbound);
 
-        NonPreSJFProcess process[] = new NonPreSJFProcess[numberOfProcess];
+        Process process[] = new Process[numberOfProcess];
         int systemTime = 0;         // system time
         int completedProcess = 0;
         float avgWT = 0, avgTAT = 0;
 
         // Below are variables for generating ganttChart purpose
-        String ganttChart[] = new String[numberOfProcess];
+        int ganttChart[] = new int[numberOfProcess];
         int order = 0;      // use for arranging the order of proccesses in the gantt chart
         int ganttChartExecutionTime[] = new int[numberOfProcess + 1];
         int ganttChartCompletionTime[] = new int[numberOfProcess];
@@ -36,7 +36,8 @@ public class SJF {
             int arrivalTime = input.nextInt();
             System.out.print("Enter P" + i + " burst time: ");
             int burstTime = input.nextInt();
-            process[i] = new NonPreSJFProcess("P" + i, arrivalTime, burstTime);
+            // process[i] = new Process("P" + i, arrivalTime, burstTime);
+            process[i] = new Process(i, burstTime, arrivalTime);
         }
 
         for (int i = 0; i < numberOfProcess; i++) {
@@ -58,7 +59,7 @@ public class SJF {
                  * If i'th process' arrival time <= system time and it is not 'completed'  and its burst time < minimum burst time
                  * Then set 'current' points to that particular process
                  */
-                if ((process[i].getArrivalTime() <= systemTime) && (!process[i].isCompleted()) && (process[i].getBurstTime() < minBurstTime)) {
+                if ((process[i].getArrivalTime() <= systemTime) && (!process[i].isComplete()) && (process[i].getBurstTime() < minBurstTime)) {
                     minBurstTime = process[i].getBurstTime();
                     current = i;
                 }
@@ -71,7 +72,7 @@ public class SJF {
                 systemTime++;
             else {
                 int completionTime = systemTime + process[current].getBurstTime();
-                process[current].updateProcessTime(completionTime);
+                process[current].setCompletionTime(completionTime);
                 completedProcess++;
                 ganttChart[order] = process[current].getProcessNum();
                 ganttChartExecutionTime[order] = systemTime;
@@ -87,8 +88,7 @@ public class SJF {
         System.out.println("+---------+--------------+------------+-----------------+-----------------+--------------+");
 
         for (int i = 0; i < numberOfProcess; i++) {
-            String processNum;
-            int at, bt, ct, tat, wt;
+            int processNum, at, bt, ct, tat, wt;
             processNum = process[i].getProcessNum();
             at = process[i].getArrivalTime();
             bt = process[i].getBurstTime();
@@ -99,7 +99,7 @@ public class SJF {
             avgTAT += tat;
 
             String row = String.format(
-                "|   %2s    |      %2d      |     %2d     |       %2d        |       %2d        |      %2d      |", 
+                "|   P%d    |      %2d      |     %2d     |       %2d        |       %2d        |      %2d      |", 
                 processNum, at, bt, ct, tat, wt
             );
             System.out.println(row);
@@ -115,7 +115,7 @@ public class SJF {
         if (!proccessArriveAt0)
             System.out.print("    |");
         for(int i = 0; i < ganttChart.length; i++) {
-            System.out.print(" " + ganttChart[i] + " |");
+            System.out.print(" P" + ganttChart[i] + " |");
             if (ganttChartExecutionTime[i + 1] != ganttChartCompletionTime[i])
                 System.out.print("    |");
         }
@@ -150,7 +150,7 @@ public class SJF {
         System.out.println("**Average Waiting Time is " + (float) (avgWT / numberOfProcess));
     }
 
-    private static void drawLine(boolean proccessArriveAt0, String[] ganttChart,
+    private static void drawLine(boolean proccessArriveAt0, int[] ganttChart,
                                  int[] ganttChartExecutionTime, int[] ganttChartCompletionTime)
     {
         System.out.println();
