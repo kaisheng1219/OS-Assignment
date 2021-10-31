@@ -24,7 +24,7 @@ public class Main {
                     pressEnterToContinue();
                     break;
                 case 2 :
-                    Pre_SJF.Preemptive();
+                    NonPrePriority.run();
                     pressEnterToContinue();
                     break;
                 case 3 :

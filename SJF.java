@@ -71,7 +71,7 @@ public class SJF {
                 systemTime++;
             else {
                 int completionTime = systemTime + process[current].getBurstTime();
-                process[current].setCompletionTime(completionTime);
+                process[current].updateProcessTimes(completionTime);
                 completedProcess++;
                 ganttChart[order] = process[current].getProcessNum();
                 ganttChartExecutionTime[order] = systemTime;
