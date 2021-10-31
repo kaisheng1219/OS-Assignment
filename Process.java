@@ -3,6 +3,7 @@ class Process implements Comparable<Process>{
     private int burstTime;
     private int initialBurstTime;
     private int arrivalTime;
+    private int priority;
     private int completionTime;
     private int turnAroundTime;
     private int waitingTime;
@@ -15,6 +16,13 @@ class Process implements Comparable<Process>{
         initialBurstTime = burstTime;
         this.arrivalTime = arrivalTime;
     }
+    public Process(int processNum, int burstTime, int arrivalTime, int priority) {
+        this.processNum = processNum;
+        this.burstTime = burstTime;
+        initialBurstTime = burstTime;
+        this.arrivalTime = arrivalTime;
+        this.priority = priority;
+    }
     public int getProcessNum() {
         return processNum;
     }
@@ -23,6 +31,9 @@ class Process implements Comparable<Process>{
     }
     public int getInitialBurstTime() {
         return initialBurstTime;
+    }
+    public int getPriority() {
+        return priority;
     }
     public int getArrivalTime() {
         return arrivalTime;
@@ -42,7 +53,7 @@ class Process implements Comparable<Process>{
     public boolean inQueue() {
         return inQueue;
     }
-    public void setCompletionTime(int completionTime) {
+    public void updateProcessTimes(int completionTime) {
         isComplete = true;
         turnAroundTime = completionTime - arrivalTime;
         waitingTime = turnAroundTime - initialBurstTime;
