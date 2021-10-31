@@ -36,7 +36,6 @@ public class SJF {
             int arrivalTime = input.nextInt();
             System.out.print("Enter P" + i + " burst time: ");
             int burstTime = input.nextInt();
-            // process[i] = new Process("P" + i, arrivalTime, burstTime);
             process[i] = new Process(i, burstTime, arrivalTime);
         }
 
