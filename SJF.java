@@ -19,71 +19,65 @@ public class SJF {
             }
         } while (processNumberOutOfbound);
 
-        String process[] = new String[numberOfProcess];
+        NonPreSJFProcess process[] = new NonPreSJFProcess[numberOfProcess];
+        int systemTime = 0;         // system time
+        int completedProcess = 0;
+        float avgWT = 0, avgTAT = 0;
+
+        // Below are variables for generating ganttChart purpose
         String ganttChart[] = new String[numberOfProcess];
         int order = 0;      // use for arranging the order of proccesses in the gantt chart
         int ganttChartExecutionTime[] = new int[numberOfProcess + 1];
         int ganttChartCompletionTime[] = new int[numberOfProcess];
-
-        int at[] = new int[numberOfProcess];        // arrival time
-        int bt[] = new int[numberOfProcess];        // burst time
-        int ct[] = new int[numberOfProcess];        // completion time
-        int tat[] = new int[numberOfProcess];       // turn around time
-        int wt[] = new int[numberOfProcess];        // waiting time
-        boolean completed[] = new boolean[numberOfProcess];  // to check whether the process is completed or not
-        int st = 0;         // system time
-        int completedProcess = 0;
-        float avgWT = 0, avgTAT = 0;
         boolean proccessArriveAt0 = false;
 
         for (int i = 0; i < numberOfProcess; i++) {
             System.out.print("\nEnter P" + i + " arrival time: ");
-            at[i] = input.nextInt();
+            int arrivalTime = input.nextInt();
             System.out.print("Enter P" + i + " burst time: ");
-            bt[i] = input.nextInt();
-            process[i] = "P"+ i;
-            completed[i] = false;
+            int burstTime = input.nextInt();
+            process[i] = new NonPreSJFProcess("P" + i, arrivalTime, burstTime);
         }
 
         for (int i = 0; i < numberOfProcess; i++) {
-            if (at[i] == 0) {
+            if (process[i].getArrivalTime() == 0) {
                 proccessArriveAt0 = true;
                 break;
             }
         }
 
         while (true) {
-            int c = numberOfProcess, minBurstTime = 100;     // preset c = number of process
+            // 'current' is a pointer to the process which are going to be executed
+            int current = numberOfProcess, minBurstTime = 100;     // preset current = number of process
 
-            if (completedProcess == numberOfProcess)         // if completed process = no of process, should break from this loop
+            // if completed process = no of process, should break from this loop
+            if (completedProcess == numberOfProcess)
                 break;
             for (int i = 0; i < numberOfProcess; i++) {
                 /*
-                 * If i'th process arrival time <= system time and its completed = 0 and burst < minimum burst time
-                 * Then set c points to that particular process
+                 * If i'th process' arrival time <= system time and it is not 'completed'  and its burst time < minimum burst time
+                 * Then set 'current' points to that particular process
                  */
-                if ((at[i] <= st) && (!completed[i]) && (bt[i] < minBurstTime)) {
-                    minBurstTime = bt[i];
-                    c = i;
+                if ((process[i].getArrivalTime() <= systemTime) && (!process[i].isCompleted()) && (process[i].getBurstTime() < minBurstTime)) {
+                    minBurstTime = process[i].getBurstTime();
+                    current = i;
                 }
             }
             /*
-             * If c still equals to number of process, means no process's arrival time < system time
+             * If current still equals to number of process, means no process's arrival time < system time
              * so have to increase the system time
              */
-            if (c == numberOfProcess)
-                st++;
+            if (current == numberOfProcess)
+                systemTime++;
             else {
-                ct[c] = st + bt[c];
-                tat[c] = ct[c] - at[c];
-                wt[c] = tat[c] - bt[c];
-                completed[c] = true;
+                int completionTime = systemTime + process[current].getBurstTime();
+                process[current].updateProcessTime(completionTime);
                 completedProcess++;
-                ganttChart[order] = process[c];
-                ganttChartExecutionTime[order] = st;
-                ganttChartCompletionTime[order] = ct[c];
+                ganttChart[order] = process[current].getProcessNum();
+                ganttChartExecutionTime[order] = systemTime;
+                ganttChartCompletionTime[order] = process[current].getCompletionTime();
                 order++;
-                st += bt[c];
+                systemTime += process[current].getBurstTime();
             }
         }
 
@@ -91,13 +85,22 @@ public class SJF {
         System.out.println("\n+---------+--------------+------------+-----------------+-----------------+--------------+");
         System.out.println("| Process | Arrival Time | Burst Time | Completion Time | Turnaround Time | Waiting Time |");
         System.out.println("+---------+--------------+------------+-----------------+-----------------+--------------+");
-        
+
         for (int i = 0; i < numberOfProcess; i++) {
-            avgWT += wt[i];
-            avgTAT += tat[i];
+            String processNum;
+            int at, bt, ct, tat, wt;
+            processNum = process[i].getProcessNum();
+            at = process[i].getArrivalTime();
+            bt = process[i].getBurstTime();
+            ct = process[i].getCompletionTime();
+            tat = process[i].getTurnAroundTime();
+            wt = process[i].getWaitingTime();
+            avgWT += wt;
+            avgTAT += tat;
+
             String row = String.format(
                 "|   %2s    |      %2d      |     %2d     |       %2d        |       %2d        |      %2d      |", 
-                process[i], at[i], bt[i], ct[i], tat[i], wt[i]
+                processNum, at, bt, ct, tat, wt
             );
             System.out.println(row);
         }
