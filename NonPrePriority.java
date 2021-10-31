@@ -61,8 +61,8 @@ public class NonPrePriority {
 
         printTable();
         printGanttChart();
-        System.out.println("\n\n**Average Turnaround Time = " + calculateAVGTurnaroundTime());
-        System.out.println("**Average Waiting Time = " + calculateAVGWaitingTime());
+        System.out.printf("\n\n**Average Turnaround Time = %.2f\n", calculateAVGTurnaroundTime());
+        System.out.printf("**Average Waiting Time = %.2f", calculateAVGWaitingTime());
     }
     private static void printTable() {
         System.out.println("\nTable:");
