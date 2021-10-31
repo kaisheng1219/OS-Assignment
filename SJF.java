@@ -145,8 +145,8 @@ public class SJF {
                 }
             }
         }
-        System.out.printf("\n\n**Average Turnaround Time = %.2f\n", calculateAVGTurnaroundTime());
-        System.out.printf("**Average Waiting Time = %.2f", calculateAVGWaitingTime());
+        System.out.printf("\n\n**Average Turnaround Time = %.2f\n", (float)(avgTAT/numberOfProcess) );
+        System.out.printf("**Average Waiting Time = %.2f\n", (float)(avgWT/numberOfProcess) );
     }
 
     private static void drawLine(boolean proccessArriveAt0, int[] ganttChart,
