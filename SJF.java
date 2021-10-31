@@ -71,7 +71,7 @@ public class SJF {
                 systemTime++;
             else {
                 int completionTime = systemTime + process[current].getBurstTime();
-                process[current].setCompletionTime(completionTime);
+                process[current].updateProcessTimes(completionTime);
                 completedProcess++;
                 ganttChart[order] = process[current].getProcessNum();
                 ganttChartExecutionTime[order] = systemTime;
@@ -145,8 +145,8 @@ public class SJF {
                 }
             }
         }
-        System.out.println("\n\n**Average Turnaround Time is " + (float) (avgTAT / numberOfProcess));
-        System.out.println("**Average Waiting Time is " + (float) (avgWT / numberOfProcess));
+        System.out.printf("\n\n**Average Turnaround Time = %.2f\n", (float)(avgTAT/numberOfProcess) );
+        System.out.printf("**Average Waiting Time = %.2f\n", (float)(avgWT/numberOfProcess) );
     }
 
     private static void drawLine(boolean proccessArriveAt0, int[] ganttChart,
