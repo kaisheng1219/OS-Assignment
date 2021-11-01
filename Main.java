@@ -13,7 +13,7 @@ public class Main {
             System.out.println("+-----------------------------------+");
             System.out.println("| 1 - Non-preemptive SJF            |");
             System.out.println("| 2 - Non-preemptive Priority       |");
-            System.out.println("| 3 - Round Robin (Quantum = 3)     |");
+            System.out.println("| 3 - Round Robin                   |");
             System.out.println("| 0 - Exit                          |");
             System.out.println("+-----------------------------------+");
             int role = getInput("Please select an algorithm", 3);
