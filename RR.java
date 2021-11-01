@@ -22,10 +22,13 @@ public class RR {
         do {
             System.out.print("Enter Time Quantum: ");
             quantum = in.nextInt();
-            if (quantum < 1 || quantum > 10) {
+            if (quantum < 1 || quantum > 10)
                 System.out.println("Time quantum can only be in range from 1 to 10\n");
-                continue;
-            }
+            else
+                break;
+        } while (true);
+        
+        do {
             System.out.print("Enter no of process: ");
             numOfProcess = in.nextInt();
             if (numOfProcess < 3 || numOfProcess > 10)
