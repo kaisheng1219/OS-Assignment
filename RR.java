@@ -2,7 +2,7 @@ import java.util.*;
 @SuppressWarnings("all")
 
 public class RR {
-    private static final int QUANTUM = 3;
+    private static int quantum;
     private static int timer;
     private static ArrayList<Process> processes;
     private static LinkedList<Process> readyQueue;
@@ -18,8 +18,14 @@ public class RR {
         processSequence = new ArrayList<>(); // store the overall sequence of process executed
         
         Scanner in = new Scanner(System.in);
-        System.out.println("\n*** Round Robin (Quantum = 3) Scheduling ***\n");
+        System.out.println("\n*** Round Robin Scheduling ***\n");
         do {
+            System.out.print("Enter Time Quantum: ");
+            quantum = in.nextInt();
+            if (quantum < 1 || quantum > 10) {
+                System.out.println("Time quantum can only be in range from 1 to 10\n");
+                continue;
+            }
             System.out.print("Enter no of process: ");
             numOfProcess = in.nextInt();
             if (numOfProcess < 3 || numOfProcess > 10)
@@ -50,7 +56,7 @@ public class RR {
         }
         // start executing round robin
         while (!readyQueue.isEmpty()) {
-            if (readyQueue.getFirst().getBurstTime() <= QUANTUM) {
+            if (readyQueue.getFirst().getBurstTime() <= quantum) {
                 Process finishedProcess = readyQueue.pop();
                 processSequence.add(finishedProcess.getProcessNum());
                 timer += finishedProcess.getBurstTime();
@@ -62,9 +68,9 @@ public class RR {
             else {
                 Process unfinishProcess = readyQueue.pop();
                 processSequence.add(unfinishProcess.getProcessNum());
-                for (int i = 0; i < QUANTUM; i++)
+                for (int i = 0; i < quantum; i++)
                     unfinishProcess.decrementBurstTime();
-                timer += QUANTUM;
+                timer += quantum;
                 checkForNewArrivals(timer);
                 readyQueue.addLast(unfinishProcess);
             }
@@ -109,8 +115,8 @@ public class RR {
                 timer = i;
                 cycleCompletionTimes.add(timer);
             }
-            else if (i == timer + QUANTUM) {
-                timer += QUANTUM;
+            else if (i == timer + quantum) {
+                timer += quantum;
                 processSequence.add(null);
                 cycleCompletionTimes.add(timer);
             }
