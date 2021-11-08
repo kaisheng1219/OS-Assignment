@@ -5,19 +5,19 @@ import java.util.*;
 public class SJF {
     public static void nonPreemptive() {
         Scanner input = new Scanner(System.in);
-        boolean processNumberOutOfbound;
+        boolean processNumberOutOfbounds;
         int numberOfProcess;
 
         System.out.println("\n*** Non-Preemptive SJF Scheduling ***\n");
         do {
             System.out.print("Enter no of process: ");
             numberOfProcess = input.nextInt();
-            processNumberOutOfbound = false;
+            processNumberOutOfbounds = false;
             if (numberOfProcess < 3 || numberOfProcess > 10) {
-                processNumberOutOfbound = true;
+                processNumberOutOfbounds = true;
                 System.out.println("Number of process can only be in range from 3 to 10\n");
             }
-        } while (processNumberOutOfbound);
+        } while (processNumberOutOfbounds);
 
         Process process[] = new Process[numberOfProcess];
         int systemTime = 0;         // system time
